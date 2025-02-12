@@ -3,13 +3,10 @@ import Header from './components/Header.vue';
 import Balance from './components/Balance.vue';
 import IncomeExpense from './components/IncomeExpense.vue';
 import AddTransaction from './components/AddTransaction.vue';
+import TransactionList from './components/TransactionList.vue';
 import {ref, computed} from 'vue'
-const transactions = ref([
-  {id: 1, test:'Paycheck', amount: 700.00},
-  {id: 2, test:'Water Bill', amount: -72.83},
-  {id: 3, test:'Electric Bill', amount: -153.89},
-  {id: 4, test:'Returned Item', amount: 20.00}
-])
+
+const transactions = ref([])
 
 
 const sum = computed(()=>{
@@ -34,7 +31,17 @@ const moneyOut = computed(()=>{
     },0)
 })
 
+const handleTransaction = (transactionData) => {
+  transactions.value.push({
+    text: transactionData.text,
+    amount: transactionData.amount,
 
+  })
+}
+
+const handleDelete =(id) => {
+  transactions.value = transactions.value.filter((x) => x.id !== id)
+}
 
 </script>
 
@@ -44,7 +51,8 @@ const moneyOut = computed(()=>{
   <div class="container">
     <Balance :total="sum"></Balance>
     <IncomeExpense :income="moneyIn" :expense="moneyOut"></IncomeExpense>
-    <AddTransaction></AddTransaction>
+    <AddTransaction @transactionSubmitted="handleTransaction"></AddTransaction>
+    <TransactionList :transactions="transactions" @transactionDeleted="handleDelete"></TransactionList>
   </div>
 
 
